@@ -39,6 +39,7 @@ typedef NS_OPTIONS(NSUInteger, HFControllerPropertyBits) {
     HFControllerHideNullBytes = 1 << 17, /*!< Indicates that the shouldHideNullBytes property has changed. */
     HFControllerColorRanges = 1 << 18, /*!< Indicates that the colorRanges property has changed. */
     HFControllerSavable = 1 << 19, /*!< Indicates that the document has become (or is no longer) savable. */
+    HFControllerMaxBytesPerLine = 1 << 20, /*!< Indicated the maxium number of bytes per line has changed. */
 };
 
 /*! @enum HFControllerMovementDirection
@@ -105,6 +106,7 @@ You create an HFController via <tt>[[HFController alloc] init]</tt>.  After that
     HFRange displayedContentsRange;
     HFFPRange displayedLineRange;
     NSUInteger bytesPerLine;
+    NSUInteger maxBytesPerLine;
     NSUInteger bytesPerColumn;
     CGFloat lineHeight;
     
@@ -241,6 +243,9 @@ You create an HFController via <tt>[[HFController alloc] init]</tt>.  After that
 
 /* Number of bytes used in each column for a text-style representer. */
 @property (nonatomic) NSUInteger bytesPerColumn;
+
+/* Maxium number of bytes per line for a text-style representer. 0 is unlimited */
+@property (nonatomic) NSUInteger maxBytesPerLine;
 
 /*! @name Edit Mode
    Determines what mode we're in, read-only, overwrite or insert. */

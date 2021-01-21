@@ -361,6 +361,17 @@ static inline Class preferredByteArrayClass(void) {
     
 }
 
+- (void)setMaxBytesPerLine:(NSUInteger)val {
+    if (val != maxBytesPerLine) {
+        maxBytesPerLine = val;
+        [self _addPropertyChangeBits: HFControllerMaxBytesPerLine];
+    }
+}
+
+- (NSUInteger)maxBytesPerLine {
+    return maxBytesPerLine;
+}
+
 - (void)setBytesPerColumn:(NSUInteger)val {
     if (val != bytesPerColumn) {
         bytesPerColumn = val;
@@ -864,7 +875,7 @@ static inline Class preferredByteArrayClass(void) {
 }
 
 - (void)_updateBytesPerLine {
-    NSUInteger newBytesPerLine = NSUIntegerMax;
+    NSUInteger newBytesPerLine = (maxBytesPerLine > 0) ? maxBytesPerLine : NSUIntegerMax;
     for(HFRepresenter* rep in representers) {
         CGFloat width = [rep.view frame].size.width;
         NSUInteger repMaxBytesPerLine = [rep maximumBytesPerLineForViewWidth:width];
@@ -884,9 +895,9 @@ static inline Class preferredByteArrayClass(void) {
     USE(rep);
     HFControllerPropertyBits remainingProperties = properties;
     BEGIN_TRANSACTION();
-    if (remainingProperties & HFControllerBytesPerLine) {
+    if (remainingProperties & (HFControllerBytesPerLine | HFControllerMaxBytesPerLine)) {
         [self _updateBytesPerLine];
-        remainingProperties &= ~HFControllerBytesPerLine;
+        remainingProperties &= ~(HFControllerBytesPerLine | HFControllerMaxBytesPerLine);
     }
     if (remainingProperties & HFControllerDisplayedLineRange) {
         [self _updateDisplayedRange];
