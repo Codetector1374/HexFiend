@@ -22,6 +22,7 @@
     IBOutlet NSMenu *stringEncodingMenu;
     IBOutlet ChooseStringEncodingWindowController *chooseStringEncoding;
     IBOutlet NSMenuItem *byteGroupingMenuItem;
+    IBOutlet NSMenuItem *bytesPerLineMenuItem;
     IBOutlet CLIController *cliController; // unused, prevents leak
 }
 

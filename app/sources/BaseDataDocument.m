@@ -371,11 +371,12 @@ static inline Class preferredByteArrayClass(void) {
         binaryTemplateRepresenter.viewWidth = binaryTemplateWidth;
         return resultSize;
     }
-    NSView *layoutView = [layoutRepresenter view];
-    NSSize proposedSizeInLayoutCoordinates = [layoutView convertSize:frameSize fromView:nil];
-    CGFloat resultingWidthInLayoutCoordinates = [layoutRepresenter minimumViewWidthForLayoutInProposedWidth:proposedSizeInLayoutCoordinates.width];
-    NSSize resultSize = [layoutView convertSize:NSMakeSize(resultingWidthInLayoutCoordinates, proposedSizeInLayoutCoordinates.height) toView:nil];
-    return resultSize;
+//    NSView *layoutView = [layoutRepresenter view];
+//    NSSize proposedSizeInLayoutCoordinates = [layoutView convertSize:frameSize fromView:nil];
+//    CGFloat resultingWidthInLayoutCoordinates = [layoutRepresenter minimumViewWidthForLayoutInProposedWidth:proposedSizeInLayoutCoordinates.width];
+//    NSSize resultSize = [layoutView convertSize:NSMakeSize(resultingWidthInLayoutCoordinates, proposedSizeInLayoutCoordinates.height) toView:nil];
+//    return resultSize;
+    return frameSize;
 }
 
 - (NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize {
@@ -683,8 +684,8 @@ static inline Class preferredByteArrayClass(void) {
     
     [(NSView *)[binaryRepresenter view] setAutoresizingMask:NSViewHeightSizable];
     [(NSView *)[hexRepresenter view] setAutoresizingMask:NSViewHeightSizable];
-    [(NSView *)[asciiRepresenter view] setAutoresizingMask:NSViewHeightSizable];
-    [(NSView *)[lineCountingRepresenter view] setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+    [(NSView *)[asciiRepresenter view] setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
+    [(NSView *)[lineCountingRepresenter view] setAutoresizingMask:NSViewHeightSizable];
     
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center addObserver:self selector:@selector(lineCountingViewChangedWidth:) name:HFLineCountingRepresenterMinimumViewWidthChanged object:lineCountingRepresenter];
@@ -1038,6 +1039,10 @@ static inline Class preferredByteArrayClass(void) {
     }
     else if (action == @selector(modifyByteGrouping:)) {
         [item setState:(NSUInteger)[item tag] == [controller bytesPerColumn]];
+        return YES;
+    }
+    else if (action == @selector(modifyBytesPerLine:)) {
+        [item setState: (NSUInteger)[item tag] == [controller maxBytesPerLine]];
         return YES;
     }
     else if (action == @selector(setLineNumberFormat:)) {
@@ -1814,6 +1819,18 @@ cancelled:;
             [(AppDelegate *)NSApp.delegate buildByteGroupingMenu];
         }
     }
+}
+
+- (IBAction)modifyBytesPerLine:(id)sender {
+    NSUInteger newBytesPerLine = (NSUInteger)[sender tag];
+    [self setMaxBytesPerLine:newBytesPerLine];
+}
+
+- (void)setMaxBytesPerLine:(NSUInteger)newBytesPerLine {
+    [controller setMaxBytesPerLine: newBytesPerLine];
+    [self relayoutAndResizeWindowForBytesPerLine:newBytesPerLine];
+    // TODO: NSUserDefaults
+//    [NSUserDefaults standardUserDefaults]
 }
 
 - (IBAction)setOverwriteMode:sender {

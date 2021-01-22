@@ -56,6 +56,7 @@
     [extendBackwardsItem setKeyEquivalent:@"["];	
     [self buildEncodingMenu];
     [self buildByteGroupingMenu];
+    [self buildBytesPerLineMenu];
 
     [self processCommandLineArguments];
 
@@ -154,6 +155,26 @@
     [menu addItem:[NSMenuItem separatorItem]];
     [menu addItemWithTitle:NSLocalizedString(@"Custom…", "") action:@selector(customByteGrouping:) keyEquivalent:@""];
     byteGroupingMenuItem.submenu = menu;
+}
+
+- (void) buildBytesPerLineMenu {
+    NSInteger defaults[] = {0, 1, 2, 4, 8, 16, 32, 64, 128, 256};
+    NSMutableIndexSet *set = [NSMutableIndexSet indexSet];
+    for (size_t i = 0; i < sizeof(defaults) / sizeof(defaults[0]); i++) {
+        [set addIndex:defaults[i]];
+    }
+    // TODO: User defaults
+    NSMenu *menu = [[NSMenu alloc] init];
+    [set enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop __unused) {
+        NSString *title = idx == 0 ? NSLocalizedString(@"Unlimited", "") : [NSString stringWithFormat:@"%ld", idx];
+        NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:title action:@selector(modifyBytesPerLine:) keyEquivalent:@""];
+        menuItem.tag = idx;
+        menuItem.target = nil;
+        [menu addItem:menuItem];
+    }];
+    [menu addItem:[NSMenuItem separatorItem]];
+    [menu addItemWithTitle:NSLocalizedString(@"Custom...", "") action:nil keyEquivalent:@""];
+    bytesPerLineMenuItem.submenu = menu;
 }
 
 static NSComparisonResult compareFontDisplayNames(NSFont *a, NSFont *b, void *unused) {

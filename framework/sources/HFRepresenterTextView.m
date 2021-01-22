@@ -1879,7 +1879,7 @@ static size_t unionAndCleanLists(CGRect *rectList, __unsafe_unretained id *value
         result = (CGFloat)((2. * [self horizontalContainerInset]) + [self advancePerCharacter] * (bytesPerLine / [self bytesPerCharacter]));
     }
     else {
-        HFASSERT(bytesPerLine % bytesPerColumn == 0);
+//        HFASSERT(bytesPerLine % bytesPerColumn == 0);
         result = (CGFloat)((2. * [self horizontalContainerInset]) + [self advancePerColumn] * (bytesPerLine / bytesPerColumn) - [self advanceBetweenColumns]);
     }
     return result;
