@@ -39,11 +39,12 @@
     NSUInteger glyphIndex = 0, byteIndex = 0;
     NSUInteger remainingBytesInThisColumn = (bytesPerColumn ? bytesPerColumn - offsetIntoLine % bytesPerColumn : NSUIntegerMax);
     CGFloat advanceBetweenColumns = [self advanceBetweenColumns];
+    CGFloat advanceBetweenCharacters = [self advanceBetweenCharacters];
     const CGFloat glyphAdvancement = glyphTable.advancement;
     while (byteIndex < numBytes) {
         unsigned char byte = bytes[byteIndex++];
         
-        CGFloat glyphAdvancementPlusAnySpace = glyphAdvancement;
+        CGFloat glyphAdvancementPlusAnySpace = glyphAdvancement + advanceBetweenCharacters;
         if (--remainingBytesInThisColumn == 0) {
             remainingBytesInThisColumn = bytesPerColumn;
             glyphAdvancementPlusAnySpace += advanceBetweenColumns;
@@ -63,8 +64,12 @@
     return 2 * glyphTable.advancement;
 }
 
-- (CGFloat)advanceBetweenColumns {
+- (CGFloat)advanceBetweenCharacters {
     return glyphTable.advancement;
+}
+
+- (CGFloat)advanceBetweenColumns {
+    return glyphTable.advancement * 2;
 }
 
 - (NSUInteger)maximumGlyphCountForByteCount:(NSUInteger)byteCount {

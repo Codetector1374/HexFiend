@@ -1043,6 +1043,10 @@ static inline Class preferredByteArrayClass(void) {
     }
     else if (action == @selector(modifyBytesPerLine:)) {
         [item setState: (NSUInteger)[item tag] == [controller maxBytesPerLine]];
+        NSUInteger value = (NSUInteger)[item tag];
+        if (value != 0 && value < [controller bytesPerColumn]) {
+            return NO;
+        }
         return YES;
     }
     else if (action == @selector(setLineNumberFormat:)) {
@@ -1805,6 +1809,11 @@ cancelled:;
     else {
         newDesiredBytesPerLine = MAX(newBytesPerColumn, bytesPerLine - (bytesPerLine % newBytesPerColumn));
     }
+    
+    if ([controller maxBytesPerLine] < newBytesPerColumn) {
+        [controller setMaxBytesPerLine: newBytesPerColumn];
+    }
+    
     [controller setBytesPerColumn:newBytesPerColumn];
     [self relayoutAndResizeWindowForBytesPerLine:newDesiredBytesPerLine]; //this ensures that the window does not shrink when going e.g. from 4->8->4
     [[NSUserDefaults standardUserDefaults] setInteger:newBytesPerColumn forKey:@"BytesPerColumn"];
@@ -1828,7 +1837,9 @@ cancelled:;
 
 - (void)setMaxBytesPerLine:(NSUInteger)newBytesPerLine {
     [controller setMaxBytesPerLine: newBytesPerLine];
-    [self relayoutAndResizeWindowForBytesPerLine:newBytesPerLine];
+    if (newBytesPerLine > 0) {
+        [self relayoutAndResizeWindowForBytesPerLine:newBytesPerLine];
+    }
     // TODO: NSUserDefaults
 //    [NSUserDefaults standardUserDefaults]
 }

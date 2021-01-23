@@ -75,11 +75,19 @@
         positions[offset1].y = descent;
         positions[offset0].x = x;
         positions[offset1].x = x + advancement;
-        x += (advancement * 2);
+        if (bytesPerColumn != 1) {
+            x += (advancement * 3);
+        } else {
+            x += (advancement * 2);
+        }
 
         ++bytesInColumn;
         if (bytesInColumn == bytesPerColumn) {
-            x += advancement;
+            if (bytesPerColumn != 1) {
+                x += advancement * 2;
+            } else {
+                x += advancement;
+            }
             bytesInColumn = 0;
         }
     }

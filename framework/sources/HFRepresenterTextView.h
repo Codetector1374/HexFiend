@@ -130,6 +130,7 @@ NS_ASSUME_NONNULL_BEGIN
 /* Following two must be overridden */
 - (CGFloat)advanceBetweenColumns;
 - (CGFloat)advancePerCharacter;
+- (CGFloat)advanceBetweenCharacters;
 
 - (CGFloat)advancePerColumn;
 - (CGFloat)totalAdvanceForBytesInRange:(NSRange)range;
